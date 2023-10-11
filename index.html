@@ -13,8 +13,158 @@
             font-family: "Lato", sans-serif
         }
 
-        .mySlides {
-            display: none
+        /* The Modal (background) */
+        .modal {
+            display: none; /* Hidden by default */
+            position: fixed; /* Stay in place */
+            z-index: 1; /* Sit on top */
+            padding-top: 60px; /* Location of the box */
+            left: 0;
+            top: 0;
+            width: 100%; /* Full width */
+            height: 100%; /* Full height */
+            overflow: auto; /* Enable scroll if needed */
+            background-color: rgb(0, 0, 0); /* Fallback color */
+            background-color: rgba(0, 0, 0, 0.9); /* Black w/ opacity */
+        }
+
+        /* Modal Content (Image) */
+        .modal-content {
+            margin: auto;
+            display: block;
+        }
+
+        /* Caption of Modal Image */
+        #modal_caption {
+            margin: auto;
+            display: block;
+            width: 80%;
+            max-width: 700px;
+            text-align: center;
+            color: #ccc;
+            padding: 10px 0;
+            font-weight: bold;
+        }
+
+        /* Add Animation */
+        .modal-content, #modal_caption {
+            animation-name: zoom;
+            animation-duration: 0.6s;
+        }
+
+        @keyframes zoom {
+            from {
+                transform: scale(0)
+            }
+            to {
+                transform: scale(1)
+            }
+        }
+
+        /* The Close Button */
+        .close {
+            position: absolute;
+            top: 15px;
+            right: 35px;
+            color: #f1f1f1;
+            font-size: 40px;
+            font-weight: bold;
+            transition: 0.3s;
+        }
+
+        .close:hover,
+        .close:focus {
+            color: #bbb;
+            text-decoration: none;
+            cursor: pointer;
+        }
+
+        /* Responsive Columns */
+        .column {
+            width: 100%;
+            max-width: 400px;
+        }
+
+        /* Clear floats after the columns */
+        .row:after {
+            content: "";
+            display: table;
+            clear: both;
+        }
+
+        /* Responsive Layout */
+        @media screen and (max-width: 600px) {
+            .column {
+                width: 100%;
+            }
+        }
+
+        /* Style for the thumbnail images */
+        .thumbnail {
+            width: 350px; /* or your desired width */
+            height: 300px; /* or your desired height */
+            background-size: auto;
+            background-position: top center;
+            background-repeat: no-repeat;
+            cursor: pointer;
+            transition: opacity 0.3s, transform 0.3s; /* smooth transition for opacity and scale */
+        }
+
+        .thumbnail:hover {
+            opacity: 0.8; /* slightly fade the image on hover */
+            transform: scale(1.05); /* slightly enlarge the image on hover */
+        }
+
+        /* Optional: Add a "Click to Enlarge" text on hover */
+        .thumbnail::after {
+            content: "Click to Enlarge";
+            display: block;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            color: #000;
+            font-size: 20px;
+            text-align: center;
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+
+        .thumbnail:hover::after {
+            opacity: 1;
+        }
+
+        .small-thumbnail {
+            width: 175px; /* half the width of the original thumbnail */
+            height: 150px; /* half the height of the original thumbnail */
+            background-size: auto;
+            background-position: top center;
+            background-repeat: no-repeat;
+            cursor: pointer;
+            transition: opacity 0.3s, transform 0.3s;
+        }
+
+        .small-thumbnail:hover {
+            opacity: 0.8;
+            transform: scale(1.05);
+        }
+
+        .small-thumbnail::after {
+            content: "Click to Enlarge";
+            display: block;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            color: #000;
+            font-size: 15px; /* smaller font size for smaller thumbnails */
+            text-align: center;
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+
+        .small-thumbnail:hover::after {
+            opacity: 1;
         }
     </style>
 </head>
@@ -23,9 +173,291 @@
 <div class="w3-content" style="max-width:2000px;margin-top:46px">
     <div class="w3-container w3-content w3-center w3-padding-64" style="max-width:800px" id="band">
         <h2 class="w3-wide"><b>6-DOF Grasp Pose Evaluation and Optimization via Transfer Learning from NeRFs</b></h2>
+        <p class="w3-justify">We address the problem of robotic grasping of known and unknown objects using implicit
+            behavior cloning. We train a grasp evaluation model from a small number of demonstrations that outputs
+            higher values for grasp candidates that are more likely to succeed in grasping. This evaluation model serves
+            as an objective function, that we maximize to identify successful grasps. Key to our approach is the
+            utilization of learned implicit representations of visual and geometric features derived from a pre-trained
+            NeRF. Though trained exclusively in a simulated environment with simplified objects and 4-DoF top-down
+            grasps, our evaluation model and optimization procedure demonstrate generalization to 6-DoF grasps and novel
+            objects both in simulation and in real-world settings, without the need for additional data.</p>
+    </div>
+    <div class="w3-container w3-content w3-padding-32" style="max-width:800px">
+        <h2 class="w3-wide">Supplementary Material</h2>
+        <h3 class="w3-wide">Network Architectures</h3>
+        <div class="w3-row-padding" style="margin-top:32px">
+            <div class="w3-margin-bottom">
+                We implemented our models in Tensorflow 2.9.1. Blocks with rounded corners represent utilities,
+                activation functions or batch normalization and are not trainable. For these we either use available
+                implementations from tensorflow, keras or tensorflow-addons or we implement them ourselves.
+                Blocks with sharp corners represent inputs or trainable variables.
+                Ocher blocks are layers available in keras or tensorflow.
+            </div>
+            <div class="w3-margin-bottom">
+                We use two main pipelines in our work. The first one is the <b>rendering pipeline</b>. Its functional
+                purpose is to render novel views of the scene given some input observations with known camera poses. In
+                our work, we mainly use it to pre-train the NeRF model and to utilize it as a feature extractor for the
+                grasp evaluation in the <b>grasp evaluation pipeline</b>. The following figures show the basic
+                architecture of both pipelines.
+            </div>
+            <div class="w3-half w3-margin-bottom">
+                <div class="w3-white">
+                    <p><b>Rendering pipeline</b></p>
+                </div>
+                <div class="thumbnail" style="background-image: url('images/rendering_pipeline.png');"
+                     data-alt="Rendering pipeline" id="rendering_pipeline"></div>
+            </div>
+            <div class="w3-half w3-margin-bottom">
+                <div class="w3-white">
+                    <p><b>Grasp evaluation pipeline</b></p>
+                </div>
+                <div class="thumbnail" style="background-image: url('images/grasp_evaluation_pipeline.png');"
+                     data-alt="Grasp evaluation pipeline" id="grasp_evaluation_pipeline"></div>
+            </div>
+
+            <div class="w3-margin-bottom">
+                When training using the <b>rendering pipeline</b>, all trainable variables are trained. When training
+                using the <b>grasp evaluation pipeline</b>, only the trainable variables of the <b>GraspReadout</b>
+                are trained.
+                <br>
+                Both pipelines employ <b>VisualFeatures</b>, a module that extracts visual features from the input
+                images. The following figure shows its architecture.
+            </div>
+            <div style="padding-left: 8px">
+                <div class="w3-white">
+                    <p><b>VisualFeatures</b></p>
+                </div>
+                <div class="thumbnail" style="background-image: url('images/visual_features.png');"
+                     data-alt="Visual features" id="visual_features"></div>
+            </div>
+            <div class="w3-margin-bottom">
+                Its implementation is analogous to the feature extraction module in VisionNeRF from the paper "Vision
+                Transformer
+                for NeRF-Based View Synthesis from a Single Input Image" by Lin et al. (<a
+                    href="https://cseweb.ucsd.edu/~viscomp/projects/VisionNeRF/">https://cseweb.ucsd.edu/~viscomp/projects/VisionNeRF</a>).
+                The model relies on a VisionTransformer (ViT), which is based on the
+                implementation in Ross Wightman's timm library (<a
+                    href="https://github.com/rwightman/pytorch-image-models">https://github.com/rwightman/pytorch-image-models</a>)
+                The following figures show the components used in the VisualFeatures module.
+            </div>
+            <div class="w3-quarter w3-margin-bottom">
+                <div class="w3-white">
+                    <p><b>ConvEncoder</b></p>
+                </div>
+                <div class="small-thumbnail" style="background-image: url('images/conv_encoder.png');"
+                     data-alt="Convolutional encoder" id="conv_encoder"></div>
+            </div>
+            <div class="w3-quarter w3-margin-bottom">
+                <div class="w3-white">
+                    <p><b>ViTEncoder</b></p>
+                </div>
+                <div class="small-thumbnail" style="background-image: url('images/vit_encoder.png');"
+                     data-alt="ViTEncoder" id="vit_encoder"></div>
+            </div>
+            <div class="w3-quarter w3-margin-bottom">
+                <div class="w3-white">
+                    <p><b>ResnetConvBlock</b></p>
+                </div>
+                <div class="small-thumbnail" style="background-image: url('images/resnet_conv_block.png');"
+                     data-alt="Rendering pipeline" id="resnet_conv_block"></div>
+            </div>
+            <div class="w3-quarter w3-margin-bottom">
+                <div class="w3-white">
+                    <p><b>ResnetConvBlock-DS</b></p>
+                </div>
+                <div class="small-thumbnail" style="background-image: url('images/resnet_conv_block_ds.png');"
+                     data-alt="ResnetConvBlock-DS" id="resnet_conv_block_ds"></div>
+            </div>
+            <div class="w3-quarter w3-margin-bottom">
+                <div class="w3-white">
+                    <p><b>ViT</b></p>
+                </div>
+                <div class="small-thumbnail" style="background-image: url('images/vit.png');"
+                     data-alt="ViT" id="vit"></div>
+            </div>
+            <div class="w3-quarter w3-margin-bottom">
+                <div class="w3-white">
+                    <p><b>PostProcess1</b></p>
+                </div>
+                <div class="small-thumbnail" style="background-image: url('images/postprocess_1.png');"
+                     data-alt="PostProcess1" id="postprocess_1"></div>
+            </div>
+            <div class="w3-quarter w3-margin-bottom">
+                <div class="w3-white">
+                    <p><b>PostProcess2</b></p>
+                </div>
+                <div class="small-thumbnail" style="background-image: url('images/postprocess_2.png');"
+                     data-alt="PostProcess2" id="postprocess_2"></div>
+            </div>
+            <div class="w3-quarter w3-margin-bottom">
+                <div class="w3-white">
+                    <p><b>PostProcess3</b></p>
+                </div>
+                <div class="small-thumbnail" style="background-image: url('images/postprocess_3.png');"
+                     data-alt="PostProcess3" id="postprocess_3"></div>
+            </div>
+            <div class="w3-quarter w3-margin-bottom">
+                <div class="w3-white">
+                    <p><b>PostProcess4</b></p>
+                </div>
+                <div class="small-thumbnail" style="background-image: url('images/postprocess_4.png');"
+                     data-alt="PostProcess4" id="postprocess_4"></div>
+            </div>
+            <div class="w3-quarter w3-margin-bottom">
+                <div class="w3-white">
+                    <p><b>PatchEmbed</b></p>
+                </div>
+                <div class="small-thumbnail" style="background-image: url('images/patch_embed.png');"
+                     data-alt="PatchEmbed" id="patch_embed"></div>
+            </div>
+            <div class="w3-quarter w3-margin-bottom">
+                <div class="w3-white">
+                    <p><b>TransformerBlock</b></p>
+                </div>
+                <div class="small-thumbnail" style="background-image: url('images/transformer_block.png');"
+                     data-alt="TransformerBlock" id="transformer_block"></div>
+            </div>
+            <div style="clear: both;"></div>
+            <div class="w3-margin-bottom">
+                For novel view synthesis using the <b>rendering pipeline</b>, we need to process single 5-DoF poses
+                that are sampled along a camera-ray before we can apply volumetric rendering. Just like in VisionNeRF,
+                we use a two-stage approach consisting of a coarse and a fine stage. The following figure shows the
+                processing of a single 5-DoF pose.
+            </div>
+            <div style="padding-left: 8px">
+                <div class="w3-white">
+                    <p><b>Process single 5-DoF pose - render</b></p>
+                </div>
+                <div class="thumbnail" style="background-image: url('images/process_single.png');"
+                     data-alt="Process single 5-DoF pose - render" id="process_single"></div>
+            </div>
+            <div class="w3-margin-bottom">
+                The <b>MVResNetMLP</b> fuses the information from multiple views into a single feature vector, or into
+                the scene activations. For rendering, the model uses two <b>MVResNetMLP</b>s: one for the coarse stage
+                and one for the fine stage. For grasp evaluation we use a single <b>MVResNetMLP</b> that is initialized
+                with the weights of the fine stage. The following figure shows the architecture of the
+                <b>MVResNetMLP</b> and its main building block, the <b>ResNetMLPBlock</b>.
+            </div>
+            <div class="w3-half w3-margin-bottom">
+                <div class="w3-white">
+                    <p><b>MVResNetMLP</b></p>
+                </div>
+                <div class="thumbnail" style="background-image: url('images/mv_resnet_mlp.png');"
+                     data-alt="MVResNetMLP" id="mv_resnet_mlp"></div>
+            </div>
+            <div class="w3-quarter w3-margin-bottom">
+                <div class="w3-white">
+                    <p><b>ResNetMLPBlock</b></p>
+                </div>
+                <div class="small-thumbnail" style="background-image: url('images/resnet_mlp_block.png');"
+                     data-alt="ResNetMLPBlock" id="resnet_mlp_block"></div>
+            </div>
+            <div style="clear: both;"></div>
+            <div class="w3-margin-bottom">
+                The <b>MVResNetMLP</b> extracts the features from the input images and the poses. These are then further
+                processed by the readouts. The <b>RenderReadout</b> uses the output embeddings to render the scene,
+                and the <b>GraspReadout</b> uses the output scene activations to evaluate the grasp candidates. The
+                following figure shows the architecture of both readout modules and the <b>GraspReadout</b>'s main
+                building blocks.
+            </div>
+            <div class="w3-half w3-margin-bottom">
+                <div class="w3-white">
+                    <p><b>RenderReadout</b></p>
+                </div>
+                <div class="thumbnail" style="background-image: url('images/render_readout.png');"
+                     data-alt="RenderReadout" id="render_readout"></div>
+            </div>
+            <div class="w3-half w3-margin-bottom">
+                <div class="w3-white">
+                    <p><b>GraspReadout</b></p>
+                </div>
+                <div class="thumbnail" style="background-image: url('images/grasp_readout.png');"
+                     data-alt="GraspReadout" id="grasp_readout"></div>
+            </div>
+            <div class="w3-quarter w3-margin-bottom">
+                <div class="w3-white">
+                    <p><b>ResNetMLPBlock2</b></p>
+                </div>
+                <div class="small-thumbnail" style="background-image: url('images/resnet_mlp_block_2.png');"
+                     data-alt="ResNetMLPBlock2" id="resnet_mlp_block_2"></div>
+            </div>
+            <div class="w3-quarter w3-margin-bottom">
+                <div class="w3-white">
+                    <p><b>ResNetMLPBlock3</b></p>
+                </div>
+                <div class="small-thumbnail" style="background-image: url('images/resnet_mlp_block_3.png');"
+                     data-alt="ResNetMLPBlock3" id="resnet_mlp_block_3"></div>
+            </div>
+        </div>
+    </div>
+
+    <div class="w3-container w3-content w3-center w3-padding-64" style="max-width:800px">
         <h3 class="w3-opacity">Additional content coming soon ... </h3>
     </div>
+    <div class="w3-container w3-content w3-padding-64" style="max-width:800px" id="contact">
+        <h2 class="w3-wide">Contact</h2>
+        <div class="w3-row w3-padding-32">
+            <div class="w3-col m12 w3-large w3-margin-bottom">
+                <i class="fa fa-user" style="width:30px"></i> Gergely Sóti<br>
+                <i class="fa fa-envelope" style="width:30px"> </i> gergely.soti@h-ka-w.de<br>
+                <i class="fa fa-map-marker" style="width:30px"></i> Institute for Robotics and Autonomous Systems,
+                Karlsruhe University of Applied Sciences, 76133 Karlsruhe, Germany<br>
+            </div>
+        </div>
+    </div>
+
+    <footer class="w3-container w3-padding-32 w3-center w3-opacity w3-light-grey w3-xlarge">
+        <p class="w3-medium">Powered by <a href="https://www.w3schools.com/w3css/default.asp" target="_blank">w3.css</a>
+        </p>
+    </footer>
 </div>
+
+<!-- The Modal -->
+<div id="myModal" class="modal">
+    <div id="modal_caption"></div>
+    <span class="close">&times;</span>
+    <img class="modal-content" id="modal_img">
+</div>
+
+<script>
+    // Get the modal
+    var modal = document.getElementById("myModal");
+
+    var modalImg = document.getElementById("modal_img");
+    var captionText = document.getElementById("modal_caption");
+    // Array of image IDs
+    var imageIds =
+        ["rendering_pipeline", "grasp_evaluation_pipeline", "visual_features", "conv_encoder", "resnet_conv_block",
+            "resnet_conv_block_ds", "vit_encoder", "vit", "postprocess_1", "postprocess_2", "postprocess_3",
+            "postprocess_4", "patch_embed", "transformer_block", "process_single", "mv_resnet_mlp",
+            "resnet_mlp_block", "render_readout", "grasp_readout", "resnet_mlp_block_2", "resnet_mlp_block_3"];
+
+    // Add click event listener to each image
+    imageIds.forEach(function (id) {
+        var img = document.getElementById(id);
+        img.onclick = function () {
+            modal.style.display = "block";
+            modalImg.src = this.style.backgroundImage.slice(5, -2); // Extract the URL from the background-image property
+            captionText.innerHTML = this.getAttribute("data-alt");
+        }
+    });
+
+    // Get the <span> element that closes the modal
+    var span = document.getElementsByClassName("close")[0];
+
+    // When the user clicks on <span> (x), close the modal
+    span.onclick = function () {
+        modal.style.display = "none";
+    }
+
+    window.onclick = function (event) {
+        if (event.target === modal) {
+            modal.style.display = "none";
+        }
+    }
+</script>
+
+
 </body>
 
 </html>
